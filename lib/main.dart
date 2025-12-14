@@ -7,17 +7,13 @@ import 'pages/detail_page.dart';
 import 'pages/search_page.dart';
 import 'pages/review_page.dart';
 
-// void main() {
-//   runApp(const MyApp());
-// }
-
 void main() {
   // Enable debug logging
-  debugPrint = (String? message, {int? wrapWidth}) {
-    if (message != null) {
-      // print('[APP DEBUG] $message');
-    }
-  };
+  // debugPrint = (String? message, {int? wrapWidth}) {
+  //   if (message != null) {
+  //     print('[APP DEBUG] $message');
+  //   }
+  // };
 
   runApp(const MyApp());
 }
