@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import '../models/api_response.dart';
 import '../models/restaurant.dart';
 import '../providers/restaurant_provider.dart';
 import '../providers/theme_provider.dart';
-import '../widgets/restaurant_card.dart';
-import '../widgets/loading_indicator.dart';
 import '../widgets/error_widget.dart';
-import '../models/api_response.dart';
+import '../widgets/loading_indicator.dart';
+import '../widgets/restaurant_card.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

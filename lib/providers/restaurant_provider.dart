@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../models/restaurant.dart';
 import '../models/api_response.dart';
 
 class RestaurantProvider extends ChangeNotifier {
-  final String _baseUrl = 'https://restaurant-api.dicoding.dev';
+  final String _baseUrl = dotenv.env['BASE_URL']!;
 
   ApiResponse<List<Restaurant>> _restaurants = Loading();
   ApiResponse<Restaurant> _restaurantDetail = Loading();

@@ -38,7 +38,7 @@ class Restaurant {
             : null,
       );
 
-  /// Digunakan saat update sebagian data (misalnya setelah add review)
+  /// Update sebagian data (add review)
   Restaurant copyWith({
     String? id,
     String? name,

@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+
+import 'pages/detail_page.dart';
+import 'pages/home_page.dart';
+import 'pages/review_page.dart';
+import 'pages/search_page.dart';
 import 'providers/restaurant_provider.dart';
 import 'providers/theme_provider.dart';
-import 'pages/home_page.dart';
-import 'pages/detail_page.dart';
-import 'pages/search_page.dart';
-import 'pages/review_page.dart';
 
-void main() {
-  // Enable debug logging
-  // debugPrint = (String? message, {int? wrapWidth}) {
-  //   if (message != null) {
-  //     print('[APP DEBUG] $message');
-  //   }
-  // };
-
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await dotenv.load(fileName: ".env");
   runApp(const MyApp());
 }
 

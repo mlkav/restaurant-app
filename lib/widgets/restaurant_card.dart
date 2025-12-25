@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+
 import '../models/restaurant.dart';
+
+final String _imageBaseUrl = dotenv.env['IMAGE_BASE_URL']!;
 
 class RestaurantCard extends StatelessWidget {
   final Restaurant restaurant;
   final VoidCallback onTap;
-
   const RestaurantCard({
     super.key,
     required this.restaurant,
@@ -28,7 +31,7 @@ class RestaurantCard extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(8),
                   child: Image.network(
-                    'https://restaurant-api.dicoding.dev/images/small/${restaurant.pictureId}',
+                    '$_imageBaseUrl/small/${restaurant.pictureId}',
                     width: 80,
                     height: 80,
                     fit: BoxFit.cover,

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+
+import '../models/api_response.dart';
 import '../models/restaurant.dart';
 import '../providers/restaurant_provider.dart';
-import '../widgets/loading_indicator.dart';
 import '../widgets/error_widget.dart';
-import '../models/api_response.dart';
+import '../widgets/loading_indicator.dart';
+
+final String _imageBaseUrl = dotenv.env['IMAGE_BASE_URL']!;
 
 class DetailPage extends StatefulWidget {
   final String restaurantId;
-
   const DetailPage({super.key, required this.restaurantId});
 
   @override
@@ -83,7 +86,7 @@ class _DetailPageState extends State<DetailPage> {
             background: Hero(
               tag: 'restaurant-image-${restaurant.id}',
               child: Image.network(
-                'https://restaurant-api.dicoding.dev/images/medium/${restaurant.pictureId}',
+                '$_imageBaseUrl/medium/${restaurant.pictureId}',
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Container(
