@@ -33,7 +33,13 @@ dart fix --apply
     width="360"
     controls
     muted
-    src="https://drive.google.com/file/d/1biajiyZR1t_rcyRV3lEZH3i4vljkOUqK/view?usp=drive_link">
-    <!-- src="https://github.com/user-attachments/assets/8ba00a5a-4619-47a5-804c-9d96c1997649"> -->
+    src="https://github.com/user-attachments/assets/8ba00a5a-4619-47a5-804c-9d96c1997649">
   </video>
 </div>
+
+<iframe
+  src="https://drive.google.com/file/d/1biajiyZR1t_rcyRV3lEZH3i4vljkOUqK/preview"
+  width="360"
+  height="240"
+  allow="autoplay">
+</iframe>
