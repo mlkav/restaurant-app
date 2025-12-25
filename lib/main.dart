@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'pages/detail_page.dart';
 import 'pages/home_page.dart';
@@ -40,12 +41,18 @@ class MyApp extends StatelessWidget {
                 color: Colors.green,
                 iconTheme: IconThemeData(color: Colors.white),
               ),
+              // Gunakan Google Fonts
+              textTheme:
+                  GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
             ),
             darkTheme: ThemeData.dark().copyWith(
               primaryColor: Colors.green,
               appBarTheme: const AppBarTheme(
                 color: Colors.green,
               ),
+              // Gunakan Google Fonts untuk dark theme juga
+              textTheme:
+                  GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
             ),
             themeMode: themeProvider.themeMode,
             initialRoute: '/',

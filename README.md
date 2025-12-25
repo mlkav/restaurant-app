@@ -28,6 +28,8 @@ dart fix --apply
 
 
 ## Demo
+[Restaurant App](https://drive.google.com/file/d/1biajiyZR1t_rcyRV3lEZH3i4vljkOUqK/preview)
+
 <div align="center">
   <video
     width="360"
@@ -35,21 +37,4 @@ dart fix --apply
     muted
     src="https://github.com/user-attachments/assets/8ba00a5a-4619-47a5-804c-9d96c1997649">
   </video>
-</div>
-
-<iframe
-  src="https://drive.google.com/file/d/1biajiyZR1t_rcyRV3lEZH3i4vljkOUqK/preview"
-  width="360"
-  height="240"
-  allow="autoplay">
-</iframe>
-
-<div align="center">
-  <iframe
-    src="https://drive.google.com/file/d/1biajiyZR1t_rcyRV3lEZH3i4vljkOUqK/preview"
-    width="360"
-    height="240"
-    allow="autoplay"
-    allowfullscreen>
-  </iframe>
 </div>
