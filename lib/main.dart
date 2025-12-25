@@ -41,7 +41,7 @@ class MyApp extends StatelessWidget {
                 color: Colors.green,
                 iconTheme: IconThemeData(color: Colors.white),
               ),
-              // Gunakan Google Fonts
+              // Google Fonts
               textTheme:
                   GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
             ),
@@ -50,7 +50,7 @@ class MyApp extends StatelessWidget {
               appBarTheme: const AppBarTheme(
                 color: Colors.green,
               ),
-              // Gunakan Google Fonts untuk dark theme juga
+              // Google Fonts dark theme
               textTheme:
                   GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
             ),
