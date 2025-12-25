@@ -1,6 +1,6 @@
 # Restaurant App
 
-Fitur:
+## Fitur:
 - Halaman Daftar Restoran
 - Halaman Detail Restoran
 - Tema Gelap/Terang
@@ -43,3 +43,13 @@ dart fix --apply
   height="240"
   allow="autoplay">
 </iframe>
+
+<div align="center">
+  <iframe
+    src="https://drive.google.com/file/d/1biajiyZR1t_rcyRV3lEZH3i4vljkOUqK/preview"
+    width="360"
+    height="240"
+    allow="autoplay"
+    allowfullscreen>
+  </iframe>
+</div>
