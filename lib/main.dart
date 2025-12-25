@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 import 'pages/detail_page.dart';
 import 'pages/home_page.dart';
@@ -13,6 +13,10 @@ import 'providers/theme_provider.dart';
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
+
+  // Google Fonts
+  GoogleFonts.config.allowRuntimeFetching = true;
+
   runApp(const MyApp());
 }
 
@@ -28,31 +32,46 @@ class MyApp extends StatelessWidget {
       ],
       child: Consumer<ThemeProvider>(
         builder: (context, themeProvider, child) {
+          final lightColorScheme = ColorScheme.fromSeed(
+            seedColor: Colors.green,
+            brightness: Brightness.light,
+          );
+
+          final darkColorScheme = ColorScheme.fromSeed(
+            seedColor: Colors.green,
+            brightness: Brightness.dark,
+          );
+
           return MaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Restaurant App',
-            theme: ThemeData.light().copyWith(
-              primaryColor: Colors.green,
-              colorScheme: ColorScheme.fromSwatch().copyWith(
-                primary: Colors.green,
-                secondary: Colors.blue,
+            // Light
+            theme: ThemeData(
+              useMaterial3: true,
+              colorScheme: lightColorScheme,
+              appBarTheme: AppBarTheme(
+                backgroundColor: lightColorScheme.primary,
+                foregroundColor: lightColorScheme.onPrimary,
+                iconTheme: IconThemeData(color: lightColorScheme.onPrimary),
               ),
-              appBarTheme: const AppBarTheme(
-                color: Colors.green,
-                iconTheme: IconThemeData(color: Colors.white),
+              // Google Fonts Light theme
+              textTheme: GoogleFonts.poppinsTextTheme(
+                ThemeData.light().textTheme,
               ),
-              // Google Fonts
-              textTheme:
-                  GoogleFonts.poppinsTextTheme(ThemeData.light().textTheme),
             ),
-            darkTheme: ThemeData.dark().copyWith(
-              primaryColor: Colors.green,
-              appBarTheme: const AppBarTheme(
-                color: Colors.green,
+            // Dark
+            darkTheme: ThemeData(
+              useMaterial3: true,
+              colorScheme: darkColorScheme,
+              appBarTheme: AppBarTheme(
+                backgroundColor: darkColorScheme.primary,
+                foregroundColor: darkColorScheme.onPrimary,
+                iconTheme: IconThemeData(color: darkColorScheme.onPrimary),
               ),
-              // Google Fonts dark theme
-              textTheme:
-                  GoogleFonts.poppinsTextTheme(ThemeData.dark().textTheme),
+              // Google Fonts Dark theme
+              textTheme: GoogleFonts.poppinsTextTheme(
+                ThemeData.dark().textTheme,
+              ),
             ),
             themeMode: themeProvider.themeMode,
             initialRoute: '/',

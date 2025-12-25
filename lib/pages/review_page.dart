@@ -57,10 +57,7 @@ class _ReviewPageState extends State<ReviewPage> {
 
     if (state is Error<void>) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(state.message),
-          backgroundColor: Colors.red,
-        ),
+        SnackBar(content: Text(state.message), backgroundColor: Colors.red),
       );
     }
   }
@@ -72,38 +69,102 @@ class _ReviewPageState extends State<ReviewPage> {
 
     return Scaffold(
       appBar: AppBar(title: const Text('Add Review')),
-      body: Padding(
+      resizeToAvoidBottomInset: true,
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(widget.restaurantName,
-                  style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 16),
-              TextFormField(
-                controller: _nameController,
-                decoration: const InputDecoration(labelText: 'Name'),
-                validator: (v) => v == null || v.isEmpty ? 'Required' : null,
+              // Nama Restoran
+              Text(
+                widget.restaurantName,
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 12),
-              TextFormField(
-                controller: _reviewController,
-                decoration: const InputDecoration(labelText: 'Review'),
-                maxLines: 4,
-                validator: (v) =>
-                    v == null || v.length < 10 ? 'Min 10 chars' : null,
+              const SizedBox(height: 8),
+              Text(
+                'Share your dining experience',
+                style: TextStyle(color: Colors.grey[600], fontSize: 14),
               ),
               const SizedBox(height: 24),
+
+              // Field Nama
+              TextFormField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Your Name',
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your name';
+                  }
+                  if (value.trim().length < 3) {
+                    return 'Name must be at least 3 characters';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 16),
+
+              // Field Review
+              TextFormField(
+                controller: _reviewController,
+                decoration: const InputDecoration(
+                  labelText: 'Your Review',
+                  border: OutlineInputBorder(),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 14,
+                  ),
+                  alignLabelWithHint: true,
+                ),
+                maxLines: 5,
+                minLines: 3,
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Please enter your review';
+                  }
+                  if (value.trim().length < 10) {
+                    return 'Review must be at least 10 characters';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+
+              // Tombol Submit
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: isLoading ? null : _submitReview,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
                   child: isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
-                      : const Text('Submit'),
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text(
+                          'Submit Review',
+                          style: TextStyle(fontSize: 16),
+                        ),
                 ),
               ),
+
+              const SizedBox(height: 100),
             ],
           ),
         ),

@@ -40,9 +40,12 @@ class _SearchPageState extends State<SearchPage> {
     }
 
     _debounceTimer = Timer(const Duration(milliseconds: 500), () {
-      if (_searchController.text.isNotEmpty) {
-        final provider = context.read<RestaurantProvider>();
-        provider.searchRestaurants(_searchController.text);
+      final query = _searchController.text.trim();
+      final provider = context.read<RestaurantProvider>();
+      if (query.isNotEmpty) {
+        provider.searchRestaurants(query);
+      } else {
+        provider.clearSearch();
       }
     });
   }
@@ -52,6 +55,7 @@ class _SearchPageState extends State<SearchPage> {
     final provider = context.watch<RestaurantProvider>();
 
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -60,12 +64,15 @@ class _SearchPageState extends State<SearchPage> {
         title: TextField(
           controller: _searchController,
           autofocus: true,
+          cursorColor: Colors.white,
+          style: const TextStyle(color: Colors.white),
           decoration: InputDecoration(
             hintText: 'Search restaurants...',
+            hintStyle: TextStyle(color: Colors.grey[400]),
             border: InputBorder.none,
             suffixIcon: _searchController.text.isNotEmpty
                 ? IconButton(
-                    icon: const Icon(Icons.clear),
+                    icon: const Icon(Icons.clear, color: Colors.black),
                     onPressed: () {
                       _searchController.clear();
                       provider.clearSearch();
@@ -80,57 +87,92 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Widget _buildBody(RestaurantProvider provider) {
-    if (_searchController.text.isEmpty) {
-      return const Center(
-        child: Text('Type to search restaurants'),
-      );
-    }
-
     final state = provider.searchResults;
 
+    if (_searchController.text.isEmpty) {
+      return _buildEmptyState();
+    }
+
     if (state is Loading<List<Restaurant>>) {
-      return const LoadingIndicator(message: 'Searching...');
+      return const Center(child: LoadingIndicator(message: 'Searching...'));
     } else if (state is Success<List<Restaurant>>) {
       return _buildSearchResults(state.data, provider.searchQuery);
     } else if (state is Error<List<Restaurant>>) {
-      return ErrorDisplay(
-        message: state.message,
-        onRetry: () => provider.searchRestaurants(provider.searchQuery),
-      );
-    }
-
-    return Container();
-  }
-
-  Widget _buildSearchResults(List<Restaurant> restaurants, String query) {
-    if (restaurants.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.search_off, size: 64, color: Colors.grey),
-            const SizedBox(height: 16),
-            Text('No results found for "$query"'),
-          ],
+      return SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height * 0.8,
+          child: ErrorDisplay(
+            message: state.message,
+            onRetry: () => provider.searchRestaurants(provider.searchQuery),
+          ),
         ),
       );
     }
 
-    return ListView.builder(
-      itemCount: restaurants.length,
-      itemBuilder: (context, index) {
-        final restaurant = restaurants[index];
-        return RestaurantCard(
-          restaurant: restaurant,
-          onTap: () {
-            Navigator.pushNamed(
-              context,
-              '/detail',
-              arguments: restaurant.id,
-            );
-          },
-        );
-      },
+    return const SizedBox.shrink();
+  }
+
+  Widget _buildSearchResults(List<Restaurant> restaurants, String query) {
+    if (restaurants.isEmpty) {
+      return _buildEmptyState(query: query);
+    }
+
+    return Scrollbar(
+      thumbVisibility: true,
+      child: ListView.builder(
+        padding: const EdgeInsets.all(8),
+        itemCount: restaurants.length,
+        itemBuilder: (context, index) {
+          final restaurant = restaurants[index];
+          return RestaurantCard(
+            restaurant: restaurant,
+            onTap: () {
+              Navigator.pushNamed(context, '/detail', arguments: restaurant.id);
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildEmptyState({String query = ''}) {
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height * 0.8,
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                query.isEmpty ? Icons.search : Icons.search_off,
+                size: 64,
+                color: Colors.grey[400],
+              ),
+              const SizedBox(height: 16),
+              Text(
+                query.isEmpty
+                    ? 'Search for restaurants'
+                    : 'No results found for "$query"',
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              if (query.isNotEmpty) ...[
+                const SizedBox(height: 8),
+                Text(
+                  'Try different keywords',
+                  style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                  textAlign: TextAlign.center,
+                ),
+              ],
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

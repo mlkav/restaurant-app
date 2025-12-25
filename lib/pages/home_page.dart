@@ -27,15 +27,12 @@ class HomePage extends StatelessWidget {
               Navigator.pushNamed(context, '/search');
             },
           ),
-          // Ganti tema
+          // Theme icon
           IconButton(
             icon: AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               transitionBuilder: (child, animation) {
-                return ScaleTransition(
-                  scale: animation,
-                  child: child,
-                );
+                return ScaleTransition(scale: animation, child: child);
               },
               child: themeProvider.isDarkMode
                   ? const Icon(
@@ -50,7 +47,7 @@ class HomePage extends StatelessWidget {
                     ),
             ),
             onPressed: () {
-              // Toggle tema
+              // Toggle theme
               themeProvider.toggleTheme(!themeProvider.isDarkMode);
             },
           ),
@@ -79,9 +76,7 @@ class HomePage extends StatelessWidget {
 
   Widget _buildRestaurantList(List<Restaurant> restaurants) {
     if (restaurants.isEmpty) {
-      return const Center(
-        child: Text('No restaurants found'),
-      );
+      return const Center(child: Text('No restaurants found'));
     }
 
     return RefreshIndicator(
@@ -89,21 +84,27 @@ class HomePage extends StatelessWidget {
         final provider = RestaurantProvider();
         await provider.fetchRestaurants();
       },
-      child: ListView.builder(
-        itemCount: restaurants.length,
-        itemBuilder: (context, index) {
-          final restaurant = restaurants[index];
-          return RestaurantCard(
-            restaurant: restaurant,
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                '/detail',
-                arguments: restaurant.id,
-              );
-            },
-          );
-        },
+      child: Scrollbar(
+        thumbVisibility: true,
+        trackVisibility: true,
+        thickness: 3,
+        radius: const Radius.circular(8),
+        child: ListView.builder(
+          itemCount: restaurants.length,
+          itemBuilder: (context, index) {
+            final restaurant = restaurants[index];
+            return RestaurantCard(
+              restaurant: restaurant,
+              onTap: () {
+                Navigator.pushNamed(
+                  context,
+                  '/detail',
+                  arguments: restaurant.id,
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }
