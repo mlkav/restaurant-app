@@ -1,5 +1,3 @@
-import 'menu_item.dart';
-
 class Menu {
   final List<MenuItem> foods;
   final List<MenuItem> drinks;
@@ -12,4 +10,13 @@ class Menu {
       json['drinks'].map((x) => MenuItem.fromJson(x)),
     ),
   );
+}
+
+class MenuItem {
+  final String name;
+
+  const MenuItem({required this.name});
+
+  factory MenuItem.fromJson(Map<String, dynamic> json) =>
+      MenuItem(name: json['name']);
 }

@@ -2,19 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/pages/main_page.dart';
 
+import 'reminder/reminder_service.dart';
 import 'pages/detail_page.dart';
-import 'pages/home_page.dart';
 import 'pages/review_page.dart';
-import 'pages/search_page.dart';
+import 'providers/favorite_provider.dart';
+import 'providers/navigation_provider.dart';
 import 'providers/restaurant_provider.dart';
+import 'providers/scheduling_provider.dart';
 import 'providers/theme_provider.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await dotenv.load(fileName: ".env");
+  await dotenv.load(
+    fileName: ".env",
+    isOptional: true,
+    mergeWith: {
+      'BASE_URL': 'https://restaurant-api.dicoding.dev',
+      'IMAGE_BASE_URL': 'https://restaurant-api.dicoding.dev/images',
+    },
+  );
 
-  // Google Fonts
+  await ReminderService.instance.init(navigatorKey);
   GoogleFonts.config.allowRuntimeFetching = true;
 
   runApp(const MyApp());
@@ -29,59 +41,42 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => ThemeProvider()),
         ChangeNotifierProvider(create: (_) => RestaurantProvider()),
+        ChangeNotifierProvider(create: (_) => FavoriteProvider()),
+        ChangeNotifierProvider(create: (_) => NavigationProvider()),
+        ChangeNotifierProvider(create: (_) => SchedulingProvider()),
       ],
       child: Consumer<ThemeProvider>(
-        builder: (context, themeProvider, child) {
-          final lightColorScheme = ColorScheme.fromSeed(
-            seedColor: Colors.green,
-            brightness: Brightness.light,
-          );
-
-          final darkColorScheme = ColorScheme.fromSeed(
-            seedColor: Colors.green,
-            brightness: Brightness.dark,
-          );
-
+        builder: (context, themeProvider, _) {
           return MaterialApp(
+            navigatorKey: navigatorKey,
             debugShowCheckedModeBanner: false,
             title: 'Restaurant App',
-            // Light
+            themeMode: themeProvider.themeMode,
             theme: ThemeData(
               useMaterial3: true,
-              colorScheme: lightColorScheme,
-              appBarTheme: AppBarTheme(
-                backgroundColor: lightColorScheme.primary,
-                foregroundColor: lightColorScheme.onPrimary,
-                iconTheme: IconThemeData(color: lightColorScheme.onPrimary),
-              ),
-              // Google Fonts Light theme
-              textTheme: GoogleFonts.poppinsTextTheme(
-                ThemeData.light().textTheme,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.green,
+                brightness: Brightness.light,
               ),
             ),
-            // Dark
+
             darkTheme: ThemeData(
               useMaterial3: true,
-              colorScheme: darkColorScheme,
-              appBarTheme: AppBarTheme(
-                backgroundColor: darkColorScheme.primary,
-                foregroundColor: darkColorScheme.onPrimary,
-                iconTheme: IconThemeData(color: darkColorScheme.onPrimary),
-              ),
-              // Google Fonts Dark theme
-              textTheme: GoogleFonts.poppinsTextTheme(
-                ThemeData.dark().textTheme,
+              fontFamily: GoogleFonts.poppins().fontFamily,
+              colorScheme: ColorScheme.fromSeed(
+                seedColor: Colors.green,
+                brightness: Brightness.dark,
               ),
             ),
-            themeMode: themeProvider.themeMode,
+
             initialRoute: '/',
             routes: {
-              '/': (context) => const HomePage(),
+              '/': (_) => const MainPage(),
               '/detail': (context) {
                 final id = ModalRoute.of(context)!.settings.arguments as String;
                 return DetailPage(restaurantId: id);
               },
-              '/search': (context) => const SearchPage(),
               '/review': (context) {
                 final args = ModalRoute.of(context)!.settings.arguments as Map;
                 return ReviewPage(

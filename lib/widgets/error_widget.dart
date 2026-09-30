@@ -1,3 +1,4 @@
+// lib\widgets\error_widget.dart
 import 'package:flutter/material.dart';
 
 class ErrorDisplay extends StatelessWidget {
@@ -55,7 +56,6 @@ class ErrorDisplay extends StatelessWidget {
     final userMessage = _getUserFriendlyMessage();
     final errorIcon = _getErrorIcon();
     final errorTitle = _getErrorTitle();
-    final colorScheme = Theme.of(context).colorScheme;
 
     return Center(
       child: SingleChildScrollView(
@@ -63,12 +63,16 @@ class ErrorDisplay extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(errorIcon, size: 64, color: colorScheme.error),
+            Icon(
+              errorIcon,
+              size: 64,
+              color: Theme.of(context).colorScheme.error,
+            ),
             const SizedBox(height: 16),
             Text(
               errorTitle,
               style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: colorScheme.error,
+                color: Theme.of(context).colorScheme.error,
                 fontWeight: FontWeight.bold,
               ),
               textAlign: TextAlign.center,
@@ -77,15 +81,15 @@ class ErrorDisplay extends StatelessWidget {
             Text(
               userMessage,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(color: Colors.grey[700]),
             ),
             const SizedBox(height: 20),
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: colorScheme.surfaceContainerHighest,
+                color: Colors.grey[100],
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Wrap(
@@ -103,10 +107,7 @@ class ErrorDisplay extends StatelessWidget {
                     ),
                     child: Text(
                       'Make sure you have an active internet connection',
-                      style: TextStyle(
-                        fontSize: 12,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
+                      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
                     ),
                   ),
                 ],
@@ -116,8 +117,8 @@ class ErrorDisplay extends StatelessWidget {
             ElevatedButton(
               onPressed: onRetry,
               style: ElevatedButton.styleFrom(
-                backgroundColor: colorScheme.primary,
-                foregroundColor: colorScheme.onPrimary,
+                backgroundColor: Theme.of(context).primaryColor,
+                foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
                   horizontal: 32,
                   vertical: 12,

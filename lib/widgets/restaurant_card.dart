@@ -1,17 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import '../models/restaurant.dart';
 
-import '../models/models.dart';
-
-final String _imageBaseUrl = dotenv.env['IMAGE_BASE_URL']!;
+String get _imageBaseUrl => dotenv.get(
+  'IMAGE_BASE_URL',
+  fallback: 'https://restaurant-api.dicoding.dev/images',
+);
 
 class RestaurantCard extends StatelessWidget {
   final Restaurant restaurant;
   final VoidCallback onTap;
+  final Widget? trailing;
+
   const RestaurantCard({
     super.key,
     required this.restaurant,
     required this.onTap,
+    this.trailing,
   });
 
   @override
@@ -25,7 +30,7 @@ class RestaurantCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Hero animation gambar
+              // HERO ANIMATION UNTUK GAMBAR
               Hero(
                 tag: 'restaurant-image-${restaurant.id}',
                 child: ClipRRect(
@@ -53,7 +58,7 @@ class RestaurantCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Hero animation
+                    // HERO ANIMATION UNTUK NAMA
                     Hero(
                       tag: 'restaurant-name-${restaurant.id}',
                       child: Material(
@@ -71,7 +76,6 @@ class RestaurantCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
 
-                    // City
                     Row(
                       children: [
                         Icon(
@@ -82,10 +86,14 @@ class RestaurantCard extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           restaurant.city,
-                          style: const TextStyle(fontSize: 12),
+                          style: Theme.of(context).textTheme.bodySmall
+                              ?.copyWith(
+                                color: Theme.of(context).colorScheme.onSurface,
+                              ),
                         ),
                       ],
                     ),
+
                     const SizedBox(height: 8),
 
                     // Rating
@@ -98,13 +106,7 @@ class RestaurantCard extends StatelessWidget {
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const Spacer(),
-                        Text(
-                          'Tap to view',
-                          style: TextStyle(
-                            fontSize: 11,
-                            color: Colors.grey[600],
-                          ),
-                        ),
+                        if (trailing != null) trailing!,
                       ],
                     ),
                   ],

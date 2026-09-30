@@ -1,3 +1,4 @@
+// lib/pages/review_page.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -56,10 +57,25 @@ class _ReviewPageState extends State<ReviewPage> {
     }
 
     if (state is Error<void>) {
+      final errorMessage = _getUserFriendlyErrorMessage(state.message);
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
       );
     }
+  }
+
+  String _getUserFriendlyErrorMessage(String message) {
+    if (message.contains('SocketException') ||
+        message.contains('Failed host lookup') ||
+        message.contains('ClientException') ||
+        message.contains('No address associated') ||
+        message.contains('Unable to connect') ||
+        message.contains('Network error')) {
+      return 'Failed to submit review. Please check your internet connection.';
+    } else if (message.contains('Server error') || message.contains('500')) {
+      return 'Server error occurred. Please try again later.';
+    }
+    return message;
   }
 
   @override
@@ -149,12 +165,12 @@ class _ReviewPageState extends State<ReviewPage> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   child: isLoading
-                      ? SizedBox(
+                      ? const SizedBox(
                           width: 20,
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Theme.of(context).colorScheme.primary,
+                            color: Colors.white,
                           ),
                         )
                       : const Text(

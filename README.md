@@ -21,6 +21,8 @@ flutter doctor
 flutter clean
 flutter pub get
 fluter run
+fluter analyze
+flutter test 
 flluter run --verbose / --debug
 dart fix --dry-run
 dart fix --apply

@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/providers/favorite_provider.dart';
 
-import '../models/models.dart';
+import '../models/api_response.dart';
+import '../models/restaurant.dart';
 import '../providers/restaurant_provider.dart';
 import '../widgets/error_widget.dart';
 import '../widgets/loading_indicator.dart';
 
-final String _imageBaseUrl = dotenv.env['IMAGE_BASE_URL']!;
+String get _imageBaseUrl => dotenv.get(
+  'IMAGE_BASE_URL',
+  fallback: 'https://restaurant-api.dicoding.dev/images',
+);
 
 class DetailPage extends StatefulWidget {
   final String restaurantId;
@@ -62,19 +67,62 @@ class _DetailPageState extends State<DetailPage> {
     ApiResponse<Restaurant> state,
   ) {
     if (state is Success<Restaurant>) {
-      final colorScheme = Theme.of(context).colorScheme;
-      return FloatingActionButton(
-        onPressed: () {
-          Navigator.pushNamed(
-            context,
-            '/review',
-            arguments: {'id': widget.restaurantId, 'name': state.data.name},
-          );
-        },
-        backgroundColor: colorScheme.primary,
-        foregroundColor: colorScheme.onPrimary,
-        elevation: 4,
-        child: const Icon(Icons.add_comment),
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            heroTag: 'btn_add_review',
+            onPressed: () {
+              Navigator.pushNamed(
+                context,
+                '/review',
+                arguments: {'id': widget.restaurantId, 'name': state.data.name},
+              );
+            },
+            child: const Icon(Icons.add_comment),
+          ),
+          const SizedBox(height: 16),
+          // Favorite Button
+          Consumer<FavoriteProvider>(
+            builder: (context, favoriteProvider, _) {
+              return FloatingActionButton(
+                heroTag: 'btn_toggle_favorite',
+                onPressed: () async {
+                  final messenger = ScaffoldMessenger.of(context);
+
+                  await favoriteProvider.toggleFavorite(state.data);
+
+                  final isFavorite = await favoriteProvider.isFavorite(
+                    state.data.id,
+                  );
+
+                  messenger.showSnackBar(
+                    SnackBar(
+                      content: Text(
+                        isFavorite
+                            ? 'Added to favorites!'
+                            : 'Removed from favorites',
+                      ),
+                      backgroundColor: isFavorite ? Colors.green : Colors.red,
+                      duration: const Duration(seconds: 2),
+                    ),
+                  );
+                },
+                backgroundColor: Colors.pink,
+                child: FutureBuilder<bool>(
+                  future: favoriteProvider.isFavorite(state.data.id),
+                  builder: (context, snapshot) {
+                    final isFavorite = snapshot.data ?? false;
+                    return Icon(
+                      isFavorite ? Icons.favorite : Icons.favorite_border,
+                      color: Colors.white,
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ],
       );
     }
     return const SizedBox();
@@ -82,31 +130,22 @@ class _DetailPageState extends State<DetailPage> {
 
   Widget _buildDetailContent(BuildContext context, Restaurant restaurant) {
     return CustomScrollView(
+      primary: true,
       slivers: [
         SliverAppBar(
           expandedHeight: 250,
           pinned: true,
           leading: Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Container(
+            child: DecoratedBox(
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.surface.withOpacity(0.85),
+                color: Colors.black.withOpacity(0.4),
                 shape: BoxShape.circle,
-                boxShadow: const [
-                  BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 4,
-                    offset: Offset(0, 2),
-                  ),
-                ],
               ),
               child: IconButton(
-                icon: Icon(
-                  Icons.arrow_back,
-                  color: Theme.of(context).colorScheme.onSurface,
-                ),
+                icon: const Icon(Icons.arrow_back),
+                color: Colors.white,
                 onPressed: () => Navigator.pop(context),
-                padding: EdgeInsets.zero,
               ),
             ),
           ),
@@ -241,6 +280,7 @@ class _DetailPageState extends State<DetailPage> {
               SizedBox(
                 height: 60,
                 child: ListView.builder(
+                  primary: false,
                   scrollDirection: Axis.horizontal,
                   itemCount: restaurant.menus!.foods.length,
                   itemBuilder: (context, index) {
@@ -281,6 +321,7 @@ class _DetailPageState extends State<DetailPage> {
               SizedBox(
                 height: 60,
                 child: ListView.builder(
+                  primary: false,
                   scrollDirection: Axis.horizontal,
                   itemCount: restaurant.menus!.drinks.length,
                   itemBuilder: (context, index) {
@@ -330,7 +371,7 @@ class _DetailPageState extends State<DetailPage> {
                 label: Text('${restaurant.customerReviews!.length}'),
                 backgroundColor: Theme.of(
                   context,
-                ).colorScheme.primary.withOpacity(0.15),
+                ).primaryColor.withOpacity(0.1),
               ),
             ],
           ],

@@ -1,6 +1,13 @@
 import 'customer_review.dart';
 import 'menu.dart';
 
+export 'customer_review.dart';
+export 'menu.dart';
+export 'restaurant_detail_response.dart';
+export 'restaurant_list_response.dart';
+export 'review_response.dart';
+export 'search_response.dart';
+
 class Restaurant {
   final String id;
   final String name;
